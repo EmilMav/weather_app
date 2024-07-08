@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks'
 import { incremented } from './features/WeatherCounter';
 import { useFetchBreedsQuery } from './features/dog-api-slice';
 import './App.css';
+import WeatherChart from './components/WeatherChart';
 
 function App() {
   const counter = useAppSelector((state) => state.counter.value);
@@ -20,6 +21,7 @@ function App() {
       <header className="App-header">
         <div>
           <WeatherCard city="Tbilisi" />
+          <WeatherChart city="Tbilisi" />
         </div>
         <button onClick={handleClick}>
           count is: {counter}

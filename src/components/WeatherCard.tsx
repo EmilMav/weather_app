@@ -1,46 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../app/store';
+import { fetchWeatherByCity } from '../features/WeatherSlice';
 import WeatherChart from './WeatherChart';
 import '../App.css';
-
-
-
-const OPENWEATHERMAP_API_KEY = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 
 interface WeatherCardProps {
     city: string;
 }
 
 const WeatherCard: React.FC<WeatherCardProps> = ({ city }) => {
-    const [weatherData, setWeatherData] = useState<any>(null);
-    const [forecastData, setForecastData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const dispatch: AppDispatch = useDispatch();
+    const weatherData = useSelector((state: RootState) => state.weather.weather[city]);
+    const forecastData = useSelector((state: RootState) => state.weather.forecast[city]);
+    const status = useSelector((state: RootState) => state.weather.weatherStatus);
+    const error = useSelector((state: RootState) => state.weather.error);
 
     useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                setLoading(true);
-                const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPENWEATHERMAP_API_KEY}&units=metric`);
-                const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${OPENWEATHERMAP_API_KEY}&units=metric`);
-                setWeatherData(weatherResponse.data);
-                setForecastData(forecastResponse.data);
-            } catch (error) {
-                setError('Error fetching weather data');
-            } finally {
-                setLoading(false);
-            }
-        };
+        dispatch(fetchWeatherByCity(city));
+    }, [city, dispatch]);
 
-        fetchWeather();
-    }, [city]);
-
-    if (loading) {
+    if (status === 'loading') {
         return <div>Loading...</div>;
     }
 
     if (error) {
         return <div>{error}</div>;
+    }
+
+    if (!weatherData) {
+        return <div>No data available</div>;
     }
 
     const dayOfWeekShort = new Date(weatherData.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' });
@@ -59,7 +48,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ city }) => {
             <p>Pressure: {weatherData.main.pressure} hPa</p>
             <p>Feels like: {weatherData.main.feels_like} °C</p>
             <p>{dayOfWeekShort}, {dayOfMonth} {month}, {time}</p>
-            {forecastData && <WeatherChart forecastData={forecastData} />}
+            {forecastData && <WeatherChart city={city} />}
         </div>
     );
 };

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,6 +13,7 @@ import {
     Legend,
     Filler
 } from 'chart.js';
+
 
 ChartJS.register(
     CategoryScale,
@@ -24,10 +27,17 @@ ChartJS.register(
 );
 
 interface WeatherChartProps {
-    forecastData: any;
+    city: string;
 }
 
-const WeatherChart: React.FC<WeatherChartProps> = ({ forecastData }) => {
+
+const WeatherChart: React.FC<WeatherChartProps> = ({ city }) => {
+    const forecastData = useSelector((state: RootState) => state.weather.forecast[city]);
+
+    if (!forecastData) {
+        return <div>No forecast data available</div>
+    }
+
     const labels = forecastData.list.map((entry: any) => {
         const date = new Date(entry.dt * 1000);
         return date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' });
