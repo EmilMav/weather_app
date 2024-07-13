@@ -21,7 +21,6 @@ function App() {
       <header className="App-header">
         <div>
           <WeatherCard city="Tbilisi" />
-          <WeatherChart city="Tbilisi" />
         </div>
         <button onClick={handleClick}>
           count is: {counter}

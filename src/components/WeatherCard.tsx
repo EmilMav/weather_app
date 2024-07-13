@@ -12,7 +12,6 @@ interface WeatherCardProps {
 const WeatherCard: React.FC<WeatherCardProps> = ({ city }) => {
     const dispatch: AppDispatch = useDispatch();
     const weatherData = useSelector((state: RootState) => state.weather.weather[city]);
-    const forecastData = useSelector((state: RootState) => state.weather.forecast[city]);
     const status = useSelector((state: RootState) => state.weather.weatherStatus);
     const error = useSelector((state: RootState) => state.weather.error);
 
@@ -48,7 +47,7 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ city }) => {
             <p>Pressure: {weatherData.main.pressure} hPa</p>
             <p>Feels like: {weatherData.main.feels_like} °C</p>
             <p>{dayOfWeekShort}, {dayOfMonth} {month}, {time}</p>
-            {forecastData && <WeatherChart city={city} />}
+            {<WeatherChart city={city} />}
         </div>
     );
 };

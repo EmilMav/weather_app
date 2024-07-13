@@ -67,14 +67,10 @@ const weatherSlice = createSlice({
             })
             .addCase(fetchForecastByCity.pending, (state) => {
                 state.forecastStatus = 'loading';
-
             })
             .addCase(fetchForecastByCity.fulfilled, (state, action) => {
-                console.log('Reducer reached');
                 state.forecastStatus = 'succeeded';
                 state.forecast[action.payload.city] = action.payload.data;
-                console.log('Forecast data received:', action.payload.data);
-                console.log('хуй1');
             })
             .addCase(fetchForecastByCity.rejected, (state, action) => {
                 state.forecastStatus = 'failed';
@@ -82,5 +78,4 @@ const weatherSlice = createSlice({
             });
     },
 });
-console.log('хуй2');
 export default weatherSlice.reducer;
