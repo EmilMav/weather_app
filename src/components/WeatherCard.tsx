@@ -5,18 +5,18 @@ import { fetchWeatherByCity } from '../features/WeatherSlice';
 import WeatherChart from './WeatherChart';
 import '../App.css';
 
-interface WeatherCardProps {
-    city: string;
-}
 
-const WeatherCard: React.FC<WeatherCardProps> = ({ city }) => {
+const WeatherCard: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const city = useSelector((state: RootState) => state.city.name);
     const weatherData = useSelector((state: RootState) => state.weather.weather[city]);
     const status = useSelector((state: RootState) => state.weather.weatherStatus);
     const error = useSelector((state: RootState) => state.weather.error);
 
     useEffect(() => {
-        dispatch(fetchWeatherByCity(city));
+        if (city) {
+            dispatch(fetchWeatherByCity(city));
+        }
     }, [city, dispatch]);
 
     if (status === 'loading') {
